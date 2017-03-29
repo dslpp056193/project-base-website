@@ -89,7 +89,7 @@ gulp.task('work', function(){
     gulp.watch('source/css/**', gulp.series('compile:scss'));
     gulp.watch('source/js/*.js', gulp.series('compile:js'));
     gulp.watch(['source/js/libs/*.js'], gulp.series('compile:js-libs'));
-    gulp.watch(['source/*.html', 'templates/**'], gulp.series('compile:html'));
+    gulp.watch(['source/*.html', 'source/templates/**'], gulp.series('compile:html'));
     gulp.watch('source/img/**', gulp.series('compile:images'));
     gulp.watch('source/fonts/**', gulp.series('compile:fonts'));
 });

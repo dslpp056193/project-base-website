@@ -1,0 +1,234 @@
+/* BUTTONS */
+
+$height: rem(42);
+$height_small: rem(36);
+$height_big: rem(48);
+
+.button{
+	color: #666;
+	height: $height;
+	line-height: calc(#{unquote($height)} - 2px);
+	font-size: 1rem;
+	display: inline-block;
+	-webkit-appearance: none;
+	cursor: pointer;
+	padding: 0 2.4rem;
+	user-select: none;
+	border-width: 1px;
+	border-style: solid;
+	border-color: transparent;
+	box-sizing: border-box;
+	transition: .3s ease, transform .2s ease;
+
+	&.hover-dark:hover{
+		background-color:  rgba(0,0,0,.05);
+	}
+
+	&.hover-light:hover{
+		background-color:  rgba(255,255,255,.1);
+	}
+
+	&:active{
+		transform: scale(.94);
+	}
+
+	// TYPES
+
+	&[disabled],
+	&.disabled{
+		cursor: default;
+		color: #fff !important;
+		border-color: #dad8d8 !important;
+		background-color: #dad8d8 !important;
+		transform: none !important;
+
+		&.shadow:active{
+			box-shadow: 0 3px 5px rgba(0,0,0,.35) !important;
+		}
+	}
+
+	&.round{
+		// border-radius: 4px;
+		border-radius: 8px;
+	}
+
+	&.round-full{
+		border-radius: 100px;
+	}
+	
+	&.shadow{
+		box-shadow: 0 3px 5px rgba(0,0,0,.35);
+
+		&:active{
+			box-shadow: 0 0 0 rgba(0,0,0,.35);
+		}
+	}
+	
+	// LOADER
+
+	&.button-loader,
+	&.button-loader-dark{
+		position: relative;
+		
+		&:before {
+			content: '';
+			
+			display: inline-block;
+			
+			position: absolute;
+			background: transparent;
+			border: 1px solid #fff;
+			border-top-color: transparent;
+			border-bottom-color: transparent;
+			border-radius: 50%;
+			
+			box-sizing: border-box;
+			
+			top: 50%;
+			left: 50%;
+			margin-top: -12px;
+			margin-left: -12px;
+			
+			width: 24px;
+			height: 24px;
+			animation: ld 1s ease-in-out infinite;
+			transition: .3s ease;
+			opacity: 0;
+		}
+
+		@keyframes ld {
+			0%   { transform: rotate(0deg) scale(1); }
+			50%  { transform: rotate(180deg) scale(1.1); }
+			100% { transform: rotate(360deg) scale(1); }
+		}
+
+		&.button-loading{
+			color: transparent !important;
+
+			&:before{
+				opacity: 1;
+			}
+		}
+
+		&.button-loading-finished{
+			&:before{
+				content: '\f0f4';
+				color: #fff;
+				animation: none;
+				line-height: rem(21);
+				font-family: $font_icofont;
+				border-color: transparent;
+			}
+		}
+
+		&.button-loading-error{
+			&:before{
+				content: '\efe8';
+				color: #fff;
+				animation: none;
+				line-height: rem(21);
+				font-family: $font_icofont;
+				border-color: transparent;
+				font-size: 1.5em;
+			}
+		}
+	}
+
+	&.button-loader-dark:before{
+		border-color: #666;
+	}
+
+	// PALLETS
+	// @param $name: style name
+	// @param $color: border and background color 
+	// @param $tcolor: text color 
+	// @param $thcolor: text color on hover
+
+	@mixin button ($name, $color, $tcolor, $thcolor){
+		&.#{$name}{
+			@content;
+			background-color: $color;
+			border-color: $color;
+
+			@if $tcolor != false {
+				color: $tcolor;
+			} @else {
+				color: #fff;
+			}
+
+			&:hover{
+				background-color: lighten($color, 5%);
+				border-color: lighten($color, 5%);
+
+				@if $thcolor != false{
+					color: $thcolor;
+				}
+			}
+
+			&.border{
+				background-color: transparent;
+				color: $color;
+				border-color: $color;
+				background-image: none;
+
+				&.dashed{
+					color: #353535;
+					border-style: dashed;
+					border-width: 2px;
+					border-color: rgba( 0, 0, 0, .3 );
+					background-color: transparent;
+
+					&:hover{
+						background-color: $color;
+						border-color: $color;
+
+						@if $thcolor != false{
+							color: $thcolor;
+						} @else {
+							color: #fff;
+						}
+					}
+				}
+
+				&:hover{
+					background-color: $color;
+
+					@if $thcolor != false{
+						color: $thcolor;
+					} @else {
+						color: #fff;
+					}
+				}
+			}
+		}
+	}
+
+	@include button("primary", $color-primary, false, false);
+	@include button("alter", $color-alter, false, false);
+	@include button("red", $color-red, false, false);
+	@include button("red", $color-success, false, false);
+	@include button("red", $color-disabled, false, false);
+
+
+	// SIZES
+
+	&.big{
+		height: $height_big;
+		line-height: calc(#{$height_big} - 2px);
+	}
+
+	&.small{
+		height: $height_small;
+		line-height: calc(#{$height_small} - 2px);
+	}
+
+	// ICONS
+	span{
+		margin-right: 1.154rem;
+
+		&.right{
+			margin-right: 0;
+			margin-left: 1.154rem;
+		}
+	}
+}

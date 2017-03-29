@@ -13,25 +13,13 @@
     <!-- end SEO -->
 
     @include('meta-opengraph.html')
+    
+    @include('meta-schemeorg.html')
 
-	<!-- SCHEME ORG -->
-	<script type='application/ld+json'> 
-		{
-			"@context": "http://www.schema.org",
-			"@type": "",
-			"brand": "",
-			"name": "",
-			"description": "",
-			"aggregateRating": {
-				"@type": "aggregateRating",
-				"ratingValue": "",
-				"reviewCount": ""
-			}
-		}
-	</script>
-	<!-- end SCHEME ORG -->
+    @include('meta-icons-and-other.html')
 </head>
 <body>
     
+    <script src="js/main.js"></script>
 </body>
 </html>

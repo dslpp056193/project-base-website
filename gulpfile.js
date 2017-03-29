@@ -12,6 +12,8 @@ const   gulp         = require('gulp'),
         imagemin     = require('gulp-imagemin'),
         gulpif       = require('gulp-if'),
         htmlbeautify = require('gulp-html-beautify'),
+        requirejs    = require('gulp-requirejs'),
+        rollup       = require('gulp-rollup'),
         uglifyjs     = require('gulp-uglifyjs');
 
 gulp.task('compile:html', function(){
@@ -21,17 +23,33 @@ gulp.task('compile:html', function(){
             basepath: './source/templates/'
         }))
         .pipe( inject_svg() )
+        .pipe( htmlbeautify({
+            indentSize: 4
+        }) )
         .pipe( gulp.dest('./app/') );
 });
 
 gulp.task('compile:js', function () {
     return gulp.src('source/js/main.js')
+        .pipe(rollup({
+            // any option supported by Rollup can be set here.
+            "format": "iife",
+            "plugins": [
+                require("rollup-plugin-babel")({
+                    "presets": [["es2015", { "modules": false }]],
+                    "plugins": ["external-helpers"]
+                })
+            ],
+            entry: 'source/js/main.js'
+        }))
+        .pipe( srcmaps.init() )
         // ADD BABEL POLYFILL
-        .pipe( babel({
-			presets: ['es2015']
-		}) )
+        // .pipe( babel({
+		// 	presets: ['es2015']
+		// }) )
         .pipe( addsrc.prepend('node_modules/babel-polyfill/dist/polyfill.min.js') )
         .pipe( concat('main.js') )
+        .pipe( srcmaps.write() )
         .pipe( gulp.dest('./app/js') );
 });
 

@@ -8,12 +8,11 @@ const   gulp         = require('gulp'),
         addsrc       = require('gulp-add-src'),
         concat       = require('gulp-concat'),
         fileinclude  = require('gulp-file-include'),
-        inject_svg   = require('gulp-inject-svg'),
+        // inject_svg   = require('gulp-inject-svg'),
         imagemin     = require('gulp-imagemin'),
         gulpif       = require('gulp-if'),
         htmlbeautify = require('gulp-html-beautify'),
-        requirejs    = require('gulp-requirejs'),
-        rollup       = require('gulp-rollup'),
+        newer        = require('gulp-newer'),
         uglifyjs     = require('gulp-uglifyjs');
 
 gulp.task('compile:html', function(){
@@ -22,7 +21,7 @@ gulp.task('compile:html', function(){
             prefix: '@',
             basepath: './source/templates/'
         }))
-        .pipe( inject_svg() )
+        // .pipe( inject_svg() )
         .pipe( htmlbeautify({
             indentSize: 4
         }) )
@@ -30,23 +29,12 @@ gulp.task('compile:html', function(){
 });
 
 gulp.task('compile:js', function () {
-    return gulp.src('source/js/main.js')
-        .pipe(rollup({
-            // any option supported by Rollup can be set here.
-            "format": "iife",
-            "plugins": [
-                require("rollup-plugin-babel")({
-                    "presets": [["es2015", { "modules": false }]],
-                    "plugins": ["external-helpers"]
-                })
-            ],
-            entry: 'source/js/main.js'
-        }))
+    return gulp.src('source/js/*.js')
         .pipe( srcmaps.init() )
         // ADD BABEL POLYFILL
-        // .pipe( babel({
-		// 	presets: ['es2015']
-		// }) )
+        .pipe( babel({
+			presets: ['es2015']
+		}) )
         .pipe( addsrc.prepend('node_modules/babel-polyfill/dist/polyfill.min.js') )
         .pipe( concat('main.js') )
         .pipe( srcmaps.write() )
@@ -78,6 +66,7 @@ gulp.task('compile:scss', function(){
 
 gulp.task('compile:images', function(){
     return gulp.src('source/img/**')
+        .pipe( newer('app/img') )
         .pipe(imagemin([
             imagemin.svgo({
                 plugins: [{
@@ -92,9 +81,10 @@ gulp.task('compile:images', function(){
 
 gulp.task('work', function(){
     gulp.watch('source/css/**', gulp.series('compile:scss'));
-    gulp.watch(['source/js/main.js'], gulp.series('compile:js'));
+    gulp.watch('source/js/*.js', gulp.series('compile:js'));
     gulp.watch(['source/js/libs/*.js'], gulp.series('compile:js-libs'));
     gulp.watch(['source/*.html', 'templates/**'], gulp.series('compile:html'));
+    gulp.watch('source/img/**', gulp.series('compile:images'));
 });
 
 gulp.task('default', gulp.series('compile:html', 'compile:js', 'compile:scss', 'compile:images'));
